@@ -12,6 +12,14 @@
       <a href=""></a>
       <div id="fireCanvas"></div>
       <div class="margin">
+        <div class="colorsChose">
+          <label for="colorPalette">Escolha a paleta de cores do fogo:</label>
+          <select id="colorPalette">
+            <option value="red">Vermelho</option>
+            <option value="blue">Azul</option>
+            <option value="green">Verde</option>
+          </select>
+        </div>
         <button onclick="decreaseFireSource()">-</button>
         <button onclick="destroyFireSource()">Min Fire</button>
         <button onclick="createFireSource()">Max Fire</button>

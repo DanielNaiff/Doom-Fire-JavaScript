@@ -16,6 +16,11 @@ h1 {
   margin: 10px;
 }
 
+.colorsChose {
+  display: grid;
+  padding: 10px;
+}
+
 table {
   border-collapse: collapse;
   border: 1px solid #000;
