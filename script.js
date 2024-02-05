@@ -1,6 +1,8 @@
-const firePixelArray = [];
-const fireWidth = 40;
-const fireHeight = 40;
+const firePixelsArray = [];
+let fireWidth = 60;
+let fireHeight = 40;
+let debug = false;
+var sentido = 0;
 const fireColorsPalette = [
   { r: 7, g: 7, b: 7 },
   { r: 31, g: 7, b: 7 },
@@ -42,69 +44,99 @@ const fireColorsPalette = [
 ];
 
 function start() {
-  createDataStructure();
-  renderFire();
+  createFireDataStructure();
+  createFireSource();
+
   setInterval(calculateFirePropagation, 50);
 }
 
-function createDataStructure() {
-  for (let i = 0; i < fireWidth; i++) {
-    firePixelArray[i] = [];
-    for (let j = 0; j < fireHeight; j++) {
-      firePixelArray[i][j] = 0;
-    }
-    firePixelArray[i][fireHeight - 1] = 36;
+function createFireDataStructure() {
+  const numberOfPixels = fireWidth * fireHeight;
+
+  for (let i = 0; i < numberOfPixels; i++) {
+    firePixelsArray[i] = 0;
   }
 }
 
 function calculateFirePropagation() {
-  for (let i = 0; i < fireWidth; i++) {
-    for (let j = 0; j < fireHeight; j++) {
-      updateFirePerPixel(i, j);
+  for (let column = 0; column < fireWidth; column++) {
+    for (let row = 0; row < fireHeight; row++) {
+      const pixelIndex = column + fireWidth * row;
+
+      updateFireIntensityPerPixel(pixelIndex);
     }
   }
+
   renderFire();
 }
 
-function updateFirePerPixel(i, j) {
-  if (j === 0 || j === 1) {
+function changeWindDirection(value) {
+  sentido = value;
+}
+
+function updateFireIntensityPerPixel(currentPixelIndex) {
+  const belowPixelIndex = currentPixelIndex + fireWidth;
+
+  if (belowPixelIndex >= fireWidth * fireHeight) {
     return;
-  } else {
-    const decay = Math.floor(Math.random() * 3);
-    const newFireIntensity =
-      firePixelArray[i][fireHeight - (j - 1)] - decay >= 0
-        ? firePixelArray[i][fireHeight - (j - 1)] - decay
-        : 0;
-    firePixelArray[i][fireHeight - j] = newFireIntensity;
+  }
+
+  const decay = Math.floor(Math.random() * 3);
+  const belowPixelFireIntensity = firePixelsArray[belowPixelIndex];
+  const newFireIntensity =
+    belowPixelFireIntensity - decay >= 0 ? belowPixelFireIntensity - decay : 0;
+
+  switch (sentido) {
+    case 0:
+      firePixelsArray[currentPixelIndex - decay] = newFireIntensity;
+      break; //wind comes to the left
+    case 1:
+      firePixelsArray[currentPixelIndex] = newFireIntensity;
+      break; //no wind (fire set to up)
+    case 2:
+      firePixelsArray[currentPixelIndex + decay] = newFireIntensity;
+      break; //wind comes to the right
   }
 }
 
 function renderFire() {
-  const debug = false;
   let html = '<table cellpadding=0 cellspacing=0>';
 
-  for (let j = 0; j < fireHeight; j++) {
+  for (let row = 0; row < fireHeight; row++) {
     html += '<tr>';
-    for (let i = 0; i < fireWidth; i++) {
+
+    for (let column = 0; column < fireWidth; column++) {
+      const pixelIndex = column + fireWidth * row;
+      const fireIntensity = firePixelsArray[pixelIndex];
+      const color = fireColorsPalette[fireIntensity];
+      const colorString = `${color.r},${color.g},${color.b}`;
+
       if (debug === true) {
         html += '<td>';
-        html += firePixelArray[i][j];
+        html += `<div class="pixel-index">${pixelIndex}</div>`;
+        html += `<div style="color: rgb(${colorString})">${fireIntensity}</div>`;
         html += '</td>';
       } else {
-        const color = fireColorsPalette[firePixelArray[i][j]];
-        console.log('Color:', color);
-        const colorString = `${color.r},${color.g},${color.b}`;
-        console.log('Color String:', colorString);
         html += `<td class="pixel" style="background-color: rgb(${colorString})">`;
         html += '</td>';
       }
     }
+
     html += '</tr>';
   }
 
   html += '</table>';
 
-  document.getElementById('fireCanvas').innerHTML = html;
+  document.querySelector('#fireCanvas').innerHTML = html;
+}
+
+function createFireSource() {
+  for (let column = 0; column <= fireWidth; column++) {
+    const overflowPixelIndex = fireWidth * fireHeight;
+    const pixelIndex = overflowPixelIndex - fireWidth + column;
+
+    firePixelsArray[pixelIndex] = 36;
+  }
 }
 
 start();
