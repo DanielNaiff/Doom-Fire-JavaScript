@@ -1,10 +1,12 @@
+import { fireColorsPalette } from './script.js';
 const firePixelArray = [];
-const fireWidth = 10;
-const fireHeight = 10;
+const fireWidth = 12;
+const fireHeight = 12;
 
 function start() {
   createDataStructure();
   renderFire();
+  setInterval(calculateFirePropagation, 1000);
 }
 
 function createDataStructure() {
@@ -17,7 +19,27 @@ function createDataStructure() {
   }
 }
 
-function calculateFirePropagation() {}
+function calculateFirePropagation() {
+  for (let i = 0; i < fireWidth; i++) {
+    for (let j = 0; j < fireHeight; j++) {
+      updateFirePerPixel(i, j);
+    }
+  }
+  renderFire();
+}
+
+function updateFirePerPixel(i, j) {
+  if (j === 0 || j === 1) {
+    return;
+  } else {
+    const decay = Math.floor(Math.random() * 3);
+    const newFireIntensity =
+      firePixelArray[i][fireHeight - (j - 1)] - decay >= 0
+        ? firePixelArray[i][fireHeight - (j - 1)] - decay
+        : 0;
+    firePixelArray[i][fireHeight - j] = newFireIntensity;
+  }
+}
 
 function renderFire() {
   let html = '<table cellpadding=0 cellspacing=0>';
