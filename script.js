@@ -69,6 +69,14 @@ function calculateFirePropagation() {
   renderFire();
 }
 
+let mouseX = 0;
+let mouseY = 0;
+
+document.addEventListener('mousemove', event => {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+});
+
 function updateFireIntensityPerPixel(currentPixelIndex) {
   const belowPixelIndex = currentPixelIndex + fireWidth;
 
@@ -81,8 +89,13 @@ function updateFireIntensityPerPixel(currentPixelIndex) {
   const belowPixelFireIntensity = firePixelsArray[belowPixelIndex];
   const newFireIntensity =
     belowPixelFireIntensity - decay >= 0 ? belowPixelFireIntensity - decay : 0;
-
-  firePixelsArray[currentPixelIndex - decay] = newFireIntensity;
+  if (mouseX > window.innerWidth / 2) {
+    firePixelsArray[currentPixelIndex + decay] = newFireIntensity;
+  } else if (mouseY < window.innerWidth / 2) {
+    firePixelsArray[currentPixelIndex - decay] = newFireIntensity;
+  } else {
+    firePixelsArray[currentPixelIndex] = newFireIntensity;
+  }
 }
 
 function renderFire() {
