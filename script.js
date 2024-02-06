@@ -2,6 +2,15 @@ const firePixelsArray = [];
 let fireWidth = 60;
 let fireHeight = 40;
 let debug = false;
+let mouseX = 0;
+
+document.addEventListener('mousemove', event => {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+});
+
+let userSelectedPaletteIndex = 0; // Índice da paleta padrão (vermelha)
+
 const fireColorsPalette = [
   [
     { r: 7, g: 7, b: 7 },
@@ -159,14 +168,6 @@ function calculateFirePropagation() {
   renderFire();
 }
 
-let mouseX = 0;
-let mouseY = 0;
-
-document.addEventListener('mousemove', event => {
-  mouseX = event.clientX;
-  mouseY = event.clientY;
-});
-
 function updateFireIntensityPerPixel(currentPixelIndex) {
   const belowPixelIndex = currentPixelIndex + fireWidth;
 
@@ -187,8 +188,6 @@ function updateFireIntensityPerPixel(currentPixelIndex) {
     firePixelsArray[currentPixelIndex] = newFireIntensity;
   }
 }
-
-let userSelectedPaletteIndex = 0; // Índice da paleta padrão (vermelha)
 
 function renderFire() {
   let html = '<table cellpadding=0 cellspacing=0>';
