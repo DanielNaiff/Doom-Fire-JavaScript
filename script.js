@@ -188,10 +188,8 @@ function updateFireIntensityPerPixel(currentPixelIndex) {
   }
 }
 
-// Adicione uma variável para armazenar a paleta de cores escolhida pelo usuário
 let userSelectedPaletteIndex = 0; // Índice da paleta padrão (vermelha)
 
-// Atualize a função renderFire para usar a paleta de cores escolhida pelo usuário
 function renderFire() {
   let html = '<table cellpadding=0 cellspacing=0>';
 
@@ -204,7 +202,6 @@ function renderFire() {
       const pixelIndex = column + fireWidth * row;
       const fireIntensity = firePixelsArray[pixelIndex];
 
-      // Use a paleta de cores escolhida pelo usuário
       const color = userSelectedPalette[fireIntensity];
 
       if (debug === true) {
@@ -226,13 +223,11 @@ function renderFire() {
   document.querySelector('#fireCanvas').innerHTML = html;
 }
 
-// Adicione um listener para detectar mudanças no input de paleta de cores
 document
   .getElementById('colorPalette')
   .addEventListener('change', function (event) {
     const selectedPalette = event.target.value;
 
-    // Atualize o índice da paleta de cores escolhida pelo usuário
     if (selectedPalette === 'red') {
       userSelectedPaletteIndex = 0; // Vermelho
     } else if (selectedPalette === 'blue') {
@@ -241,7 +236,7 @@ document
       userSelectedPaletteIndex = 2; // Verde
     }
 
-    renderFire(); // Re-renderiza o fogo quando a paleta é alterada
+    renderFire();
   });
 
 function createFireSource() {
